@@ -20,7 +20,13 @@ tools:context=".MainActivity">
             android:layout_height="wrap_content"
             android:background="?attr/colorPrimary"
             android:minHeight="?attr/actionBarSize"
-            android:theme="?attr/actionBarTheme" />
+            android:theme="?attr/actionBarTheme"
+            app:navigationIcon="@drawable/menu_icon_white"
+            app:title="@string/app_name"
+            app:menu=""
+            app:titleTextColor="@color/white"
+            style="@style/Widget.MaterialComponents.Toolbar.Primary"/>
+
     </FrameLayout>
 
 <!-- Navigation Drawer -->
