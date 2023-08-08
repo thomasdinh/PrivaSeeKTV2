@@ -23,7 +23,7 @@ tools:context=".MainActivity">
             android:theme="?attr/actionBarTheme"
             app:navigationIcon="@drawable/menu_icon_white"
             app:title="@string/app_name"
-            app:menu=""
+            app:menu="@menu/tool_bar"
             app:titleTextColor="@color/white"
             style="@style/Widget.MaterialComponents.Toolbar.Primary"/>
 
