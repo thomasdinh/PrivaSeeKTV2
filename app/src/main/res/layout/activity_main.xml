@@ -20,7 +20,6 @@ tools:context=".MainActivity">
             android:layout_height="wrap_content"
             android:background="?attr/colorPrimary"
             android:minHeight="?attr/actionBarSize"
-            android:
             android:theme="?attr/actionBarTheme" />
     </FrameLayout>
 
