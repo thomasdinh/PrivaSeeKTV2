@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Only one Item is clickable-->
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_home"
+            android:title="Home"
+            android:icon="@drawable/back_icon"/>
+
+        <item
+            android:id="@+id/nav_settings"
+            android:title="Settings"
+            android:icon="@drawable/back_icon"/>
+
+        <item
+            android:id="@+id/nav_scan"
+            android:title="Scan"
+            android:icon="@drawable/device_scan_icon"/>
+    </group>
+    <group android:checkableBehavior="single">
+        <item android:title="Profile">
+        <menu>
+            <item
+                android:id="@+id/nav_FAQ"
+                android:title="FAQ"
+                android:icon="@drawable/device_scan_icon"/>
+
+            <item
+                android:id="@+id/nav_FAQs"
+                android:title="FAQ 2"
+                android:icon="@drawable/device_scan_icon"/>
+
+        </menu>
+        </item>
+
+    </group>
+</menu>
