@@ -6,6 +6,7 @@ import android.widget.FrameLayout
 import androidx.appcompat.widget.Toolbar
 
 import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import com.google.android.material.navigation.NavigationView
 import java.nio.file.Files.find
@@ -33,8 +34,27 @@ class MainActivity : AppCompatActivity() {
         // Handle navigation item clicks
         navView.setNavigationItemSelectedListener { menuItem ->
             // Handle navigation item clicks here
-            // You can switch fragments or perform actions based on the selected item
+            when (menuItem.itemId) {
+                R.id.nav_home -> {
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.fragment_container, home_fragment())
+                        .commit()
+                }
+                R.id.nav_scan -> {
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.fragment_container, scan_fragment())
+                        .commit()
+                }
+                // Handle other menu items if needed
+            }
+            drawerLayout.closeDrawer(GravityCompat.START)
             true
+        }
+        // Load the HomeFragment as the start fragment
+        if (savedInstanceState == null) {
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, home_fragment()) // Replace with your fragment class
+                .commit()
         }
 
     }
