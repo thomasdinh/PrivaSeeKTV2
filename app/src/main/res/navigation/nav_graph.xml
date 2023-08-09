@@ -3,32 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/placeholder">
-    <fragment android:id="@+id/placeholder" >
-        <action
-            android:id="@+id/action_placeholder_to_mainActivity2"
-            app:destination="@id/mainActivity2" />
-        <action
-            android:id="@+id/action_placeholder_to_fragment_home2"
-            app:destination="@id/fragment_home2" />
-    </fragment>
-    <activity
-        android:id="@+id/mainActivity2"
-        android:name="com.example.privaseektv2.MainActivity"
-        android:label="activity_main"
-        tools:layout="@layout/activity_main" />
+    app:startDestination="@id/fragment_home">
     <fragment
-        android:id="@+id/fragment_home2"
+        android:id="@+id/fragment_home"
         android:name="com.example.privaseektv2.Fragment_home"
         android:label="fragment_home"
-        tools:layout="@layout/fragment_home" >
-        <action
-            android:id="@+id/action_fragment_home2_to_fragment_scan"
-            app:destination="@id/fragment_scan" />
-    </fragment>
-    <fragment
-        android:id="@+id/fragment_scan"
-        android:name="com.example.privaseektv2.fragment_scan"
-        android:label="fragment_scan"
-        tools:layout="@layout/fragment_scan" />
+        tools:layout="@layout/fragment_home" />
 </navigation>

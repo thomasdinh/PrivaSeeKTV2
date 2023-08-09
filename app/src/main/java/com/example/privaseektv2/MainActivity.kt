@@ -14,22 +14,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
-        val navigationView: NavigationView = findViewById(R.id.nav_view)
-        val frameLayout : FrameLayout = findViewById(R.id.content_frame)
-        val toolbar: Toolbar = findViewById(R.id.toolbar)
-        setSupportActionBar(toolbar)
 
-        val toggle = ActionBarDrawerToggle(
-            this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close
-        )
-        drawerLayout.addDrawerListener(toggle)
-        toggle.syncState()
 
-        navigationView.setNavigationItemSelectedListener { menuItem ->
-            // Handle navigation item clicks here
-            // You can switch fragments or perform actions based on the selected item
-            true
-        }
     }
 }

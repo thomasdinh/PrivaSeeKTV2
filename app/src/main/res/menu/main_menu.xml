@@ -4,33 +4,37 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_home"
-            android:title="Home"
-            android:icon="@drawable/back_icon"/>
+            android:icon="@drawable/back_icon"
+            android:title="Home" />
 
         <item
             android:id="@+id/nav_settings"
-            android:title="Settings"
-            android:icon="@drawable/back_icon"/>
+            android:icon="@drawable/back_icon"
+            android:title="Settings" />
 
         <item
             android:id="@+id/nav_scan"
-            android:title="Scan"
-            android:icon="@drawable/device_scan_icon"/>
+            android:icon="@drawable/device_scan_icon"
+            android:title="Scan" />
+        <item
+            android:id="@+id/nav_survey"
+            android:icon="@drawable/survey_icon"
+            android:title="Scan" />
     </group>
     <group android:checkableBehavior="single">
         <item android:title="Profile">
-        <menu>
-            <item
-                android:id="@+id/nav_FAQ"
-                android:title="FAQ"
-                android:icon="@drawable/device_scan_icon"/>
+            <menu>
+                <item
+                    android:id="@+id/nav_FAQ"
+                    android:icon="@drawable/device_scan_icon"
+                    android:title="FAQ" />
 
-            <item
-                android:id="@+id/nav_FAQs"
-                android:title="FAQ 2"
-                android:icon="@drawable/device_scan_icon"/>
+                <item
+                    android:id="@+id/nav_FAQs"
+                    android:icon="@drawable/device_scan_icon"
+                    android:title="FAQ 2" />
 
-        </menu>
+            </menu>
         </item>
 
     </group>
