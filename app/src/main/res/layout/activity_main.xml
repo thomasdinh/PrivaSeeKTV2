@@ -27,6 +27,10 @@ tools:context=".MainActivity">
             app:titleTextColor="@color/white"
             style="@style/Widget.MaterialComponents.Toolbar.Primary"/>
 
+        <fragment
+            android:layout_width="match_parent"
+            android:layout_height="635dp" />
+
     </FrameLayout>
 
     <!-- Navigation Drawer -->
@@ -37,5 +41,6 @@ tools:context=".MainActivity">
         android:layout_gravity="start"
         app:headerLayout="@layout/header"
         app:menu="@menu/main_menu"/>
+
 
 </androidx.drawerlayout.widget.DrawerLayout>
