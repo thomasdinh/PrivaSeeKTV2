@@ -1,20 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn ="navigation_view"
+    >
     <!-- Only one Item is clickable-->
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_home"
-            android:icon="@drawable/back_icon"
+            android:icon="@drawable/baseline_home_24"
             android:title="Home" />
 
         <item
             android:id="@+id/nav_settings"
-            android:icon="@drawable/back_icon"
+            android:icon="@drawable/settings_colored_icon"
             android:title="Settings" />
 
         <item
             android:id="@+id/nav_scan"
-            android:icon="@drawable/device_scan_icon"
+            android:icon="@drawable/devices_icon"
             android:title="Scan" />
         <item
             android:id="@+id/nav_survey"
@@ -26,13 +29,13 @@
             <menu>
                 <item
                     android:id="@+id/nav_FAQ"
-                    android:icon="@drawable/device_scan_icon"
+                    android:icon="@drawable/survey_icon"
                     android:title="FAQ" />
 
                 <item
                     android:id="@+id/nav_FAQs"
-                    android:icon="@drawable/device_scan_icon"
-                    android:title="FAQ 2" />
+                    android:icon="@drawable/report_icon"
+                    android:title="Report" />
 
             </menu>
         </item>
