@@ -2,14 +2,12 @@ package com.example.privaseektv2
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.FrameLayout
 import androidx.appcompat.widget.Toolbar
 
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import com.google.android.material.navigation.NavigationView
-import java.nio.file.Files.find
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,7 +40,7 @@ class MainActivity : AppCompatActivity() {
                 }
                 R.id.nav_scan -> {
                     supportFragmentManager.beginTransaction()
-                        .replace(R.id.fragment_container, scan_fragment())
+                        .replace(R.id.fragment_container, ScanFragment())
                         .commit()
                 }
                 // Handle other menu items if needed
