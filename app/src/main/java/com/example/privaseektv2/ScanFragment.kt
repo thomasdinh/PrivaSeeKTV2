@@ -5,6 +5,7 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.net.wifi.WifiManager
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -12,6 +13,12 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import java.io.IOException
+import java.net.DatagramPacket
+import java.net.DatagramSocket
+import java.net.InetAddress
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
 
 class ScanFragment : Fragment() {
 
@@ -30,8 +37,9 @@ class ScanFragment : Fragment() {
         scanButton = view.findViewById(R.id.button_scan)
 
         scanButton.setOnClickListener {
-            performWifiScan()
             displayIPAndBroadcast()
+            performIcmpScan()
+
         }
 
         return view
@@ -109,25 +117,70 @@ class ScanFragment : Fragment() {
         )
     }
 
-    private fun performWifiScan() {
-        if (ContextCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED
-        ) {
-            wifiManager.startScan()
+    //private val UDP_PORT = 12345 // Use the port you want to scan on
+    private val executor: ExecutorService = Executors.newFixedThreadPool(10) // Adjust the number of threads as needed
 
-            val scanResults = wifiManager.scanResults
-            val scanResultsText = StringBuilder()
+    private fun performIcmpScan() {
+        val ownIP = getOwnIP(requireContext())
+        val subnetMask = getSubnetMask(requireContext())
 
-            for (scanResult in scanResults) {
-                scanResultsText.append(scanResult.SSID).append("\n")
+        if (ownIP == null || subnetMask == null) {
+            scanResultsTextView.text = "Couldn't retrieve IP or subnet mask"
+            return
+        }
+
+        val baseIP = calculateBaseIP(ownIP, subnetMask)
+        val ipAddressesToScan = mutableListOf<String>()
+
+        for (i in 1..254) {
+            val ipAddress = "$baseIP.$i"
+            ipAddressesToScan.add(ipAddress)
+        }
+
+        // Use executor to perform the scan in the background
+        executor.submit {
+            val activeHosts = mutableListOf<String>()
+            for (ip in ipAddressesToScan) {
+                if (isHostReachable(ip)) {
+                    activeHosts.add(ip)
+                }
             }
 
-            scanResultsTextView.text = scanResultsText.toString()
-        } else {
-            // Handle permission request if not granted
-            // You can request permission here using ActivityCompat.requestPermissions
+            // Update UI with active hosts
+            activity?.runOnUiThread {
+                val resultText = activeHosts.joinToString("\n")
+                scanResultsTextView.text = resultText
+            }
         }
     }
+
+    private fun isHostReachable(host: String): Boolean {
+        return try {
+            val inetAddress = InetAddress.getByName(host)
+            inetAddress.isReachable(3000) // Timeout in milliseconds
+        } catch (e: IOException) {
+            false
+        }
+    }
+
+    private fun calculateBaseIP(ownIP: String, subnetMask: String): String {
+        val ownIPParts = ownIP.split('.').map { it.toInt() }
+        val subnetMaskParts = subnetMask.split('.').map { it.toInt() }
+
+        val baseIPParts = ownIPParts.zip(subnetMaskParts) { ipPart, maskPart ->
+            ipPart and maskPart
+        }
+
+        return baseIPParts.joinToString(".")
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        executor.shutdown() // Shut down the executor when the view is destroyed
+    }
+
+
+
+
+
 }
