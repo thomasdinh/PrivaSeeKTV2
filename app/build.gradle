@@ -20,9 +20,14 @@ android {
         python {
             version "3.11"
         }
+        python{
+            pip{
+                install "ping3"
+            }
+        }
 
         python {
-            buildPython "D:/Thomas Dinh/Downloads/python-3.11.4-amd64.exe"
+            buildPython "C:/Users/Thomas Dinh/AppData/Local/Programs/Python/Python311/python.exe"
 
         }
 
@@ -51,6 +56,7 @@ android {
 }
 
 dependencies {
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.2'
 
     implementation 'androidx.core:core-ktx:1.8.0'
     implementation 'androidx.appcompat:appcompat:1.6.1'

@@ -13,9 +13,16 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import com.chaquo.python.PyObject
+import com.chaquo.python.Python
+import com.chaquo.python.android.AndroidPlatform
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.launch
 import java.io.IOException
-import java.net.DatagramPacket
-import java.net.DatagramSocket
 import java.net.InetAddress
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -36,9 +43,21 @@ class ScanFragment : Fragment() {
         scanResultsTextView = view.findViewById(R.id.textView_scanResults)
         scanButton = view.findViewById(R.id.button_scan)
 
+        //Setup for Python Code
+        if (!Python.isStarted()) {
+            Python.start(AndroidPlatform(requireContext()));
+        }
+
         scanButton.setOnClickListener {
             displayIPAndBroadcast()
-            performIcmpScan()
+            CoroutineScope(Dispatchers.IO).launch {
+                val result = icmp_scan() // Execute Python code here
+
+                // Update the UI on the main thread
+                launch(Dispatchers.Main) {
+                    scanResultsTextView.text = result.toString()
+                }
+            }
 
         }
 
@@ -120,59 +139,49 @@ class ScanFragment : Fragment() {
     //private val UDP_PORT = 12345 // Use the port you want to scan on
     private val executor: ExecutorService = Executors.newFixedThreadPool(10) // Adjust the number of threads as needed
 
-    private fun performIcmpScan() {
-        val ownIP = getOwnIP(requireContext())
-        val subnetMask = getSubnetMask(requireContext())
 
-        if (ownIP == null || subnetMask == null) {
-            scanResultsTextView.text = "Couldn't retrieve IP or subnet mask"
-            return
+
+    private suspend fun icmp_scan(): String {
+        // Setup for Python Code
+        if (!Python.isStarted()) {
+            Python.start(AndroidPlatform(requireContext()))
         }
+        val py = Python.getInstance()
+        val pyScript = py.getModule("icmp_scan")
 
-        val baseIP = calculateBaseIP(ownIP, subnetMask)
-        val ipAddressesToScan = mutableListOf<String>()
+        val startRange = 1
+        val endRange = 254
+        val segmentSize = 2 // Adjust this based on your preference
 
-        for (i in 1..254) {
-            val ipAddress = "$baseIP.$i"
-            ipAddressesToScan.add(ipAddress)
-        }
+        val tasks = mutableListOf<Deferred<PyObject>>()
 
-        // Use executor to perform the scan in the background
-        executor.submit {
-            val activeHosts = mutableListOf<String>()
-            for (ip in ipAddressesToScan) {
-                if (isHostReachable(ip)) {
-                    activeHosts.add(ip)
+        var results = tasks.awaitAll()
+        try {
+            for (i in startRange..endRange step segmentSize) {
+                val segmentEnd = minOf(i + segmentSize, endRange + 1)
+                val task = CoroutineScope(Dispatchers.IO).async {
+                    pyScript.callAttr("main", i, segmentEnd)
+                }
+                tasks.add(task)
+            }
+            results = tasks.awaitAll()
+
+            val outputText = StringBuilder()
+
+            for ((index, result) in results.withIndex()) {
+                val hostResult = result.toString()
+                if (hostResult.isNotEmpty()) {
+                    outputText.append("Host segment ${index + 1}:\n$hostResult\n")
                 }
             }
 
-            // Update UI with active hosts
-            activity?.runOnUiThread {
-                val resultText = activeHosts.joinToString("\n")
-                scanResultsTextView.text = resultText
-            }
+            return outputText.toString()
+        } catch (e: Exception) {
+            return "Task failed: ${e.message}"
         }
     }
 
-    private fun isHostReachable(host: String): Boolean {
-        return try {
-            val inetAddress = InetAddress.getByName(host)
-            inetAddress.isReachable(3000) // Timeout in milliseconds
-        } catch (e: IOException) {
-            false
-        }
-    }
 
-    private fun calculateBaseIP(ownIP: String, subnetMask: String): String {
-        val ownIPParts = ownIP.split('.').map { it.toInt() }
-        val subnetMaskParts = subnetMask.split('.').map { it.toInt() }
-
-        val baseIPParts = ownIPParts.zip(subnetMaskParts) { ipPart, maskPart ->
-            ipPart and maskPart
-        }
-
-        return baseIPParts.joinToString(".")
-    }
 
     override fun onDestroyView() {
         super.onDestroyView()
