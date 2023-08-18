@@ -51,7 +51,7 @@ class ScanFragment : Fragment() {
         scanButton.setOnClickListener {
             displayIPAndBroadcast()
             CoroutineScope(Dispatchers.IO).launch {
-                val result = icmp_scan() // Execute Python code here
+                val result = IcmpScanUtility.icmpScan(requireContext()) // Execute Python code here
 
                 // Update the UI on the main thread
                 launch(Dispatchers.Main) {
@@ -138,50 +138,6 @@ class ScanFragment : Fragment() {
 
     //private val UDP_PORT = 12345 // Use the port you want to scan on
     private val executor: ExecutorService = Executors.newFixedThreadPool(10) // Adjust the number of threads as needed
-
-
-
-    private suspend fun icmp_scan(): String {
-        // Setup for Python Code
-        if (!Python.isStarted()) {
-            Python.start(AndroidPlatform(requireContext()))
-        }
-        val py = Python.getInstance()
-        val pyScript = py.getModule("icmp_scan")
-
-        val startRange = 1
-        val endRange = 254
-        val segmentSize = 2 // Adjust this based on your preference
-
-        val tasks = mutableListOf<Deferred<PyObject>>()
-
-        var results = tasks.awaitAll()
-        try {
-            for (i in startRange..endRange step segmentSize) {
-                val segmentEnd = minOf(i + segmentSize, endRange + 1)
-                val task = CoroutineScope(Dispatchers.IO).async {
-                    pyScript.callAttr("main", i, segmentEnd)
-                }
-                tasks.add(task)
-            }
-            results = tasks.awaitAll()
-
-            val outputText = StringBuilder()
-
-            for ((index, result) in results.withIndex()) {
-                val hostResult = result.toString()
-                if (hostResult.isNotEmpty()) {
-                    outputText.append("Host segment ${index + 1}:\n$hostResult\n")
-                }
-            }
-
-            return outputText.toString()
-        } catch (e: Exception) {
-            return "Task failed: ${e.message}"
-        }
-    }
-
-
 
     override fun onDestroyView() {
         super.onDestroyView()

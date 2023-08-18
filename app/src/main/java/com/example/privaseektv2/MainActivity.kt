@@ -7,9 +7,15 @@ import androidx.appcompat.widget.Toolbar
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
-import com.chaquo.python.Python
-import com.chaquo.python.android.AndroidPlatform
+
+import com.example.privaseektv2.IcmpScanUtility.icmpScan
 import com.google.android.material.navigation.NavigationView
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,5 +65,13 @@ class MainActivity : AppCompatActivity() {
                 .commit()
         }
 
+    }
+
+
+    private fun launchICMPScanInBackground() {
+        CoroutineScope(Dispatchers.Main).launch {
+            val scanResult = IcmpScanUtility.icmpScan(this@MainActivity)
+            // Handle scan result here (e.g., display it in a TextView)
+        }
     }
 }
