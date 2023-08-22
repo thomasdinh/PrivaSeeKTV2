@@ -18,6 +18,7 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
+    private val dataRepository = DataRepository.getInstance()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -27,6 +28,7 @@ class MainActivity : AppCompatActivity() {
         val drawerLayout: DrawerLayout = findViewById(R.id.drawerLayout)
         val navView :NavigationView = findViewById(R.id.nav_view)
         val toolbar :Toolbar =findViewById(R.id.toolbar)
+
 
         setSupportActionBar(toolbar)
 
@@ -38,6 +40,7 @@ class MainActivity : AppCompatActivity() {
         )
         drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
+        launchICMPScanInBackground()
 
         // Handle navigation item clicks
         navView.setNavigationItemSelectedListener { menuItem ->
@@ -71,7 +74,12 @@ class MainActivity : AppCompatActivity() {
     private fun launchICMPScanInBackground() {
         CoroutineScope(Dispatchers.Main).launch {
             val scanResult = IcmpScanUtility.icmpScan(this@MainActivity)
+            updateDataInRepository(scanResult.toString())
             // Handle scan result here (e.g., display it in a TextView)
         }
+    }
+
+    private fun updateDataInRepository(newData: String) {
+        dataRepository.addOrUpdateData(newData)
     }
 }

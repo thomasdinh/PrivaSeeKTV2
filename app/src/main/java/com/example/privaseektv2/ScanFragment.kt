@@ -32,6 +32,7 @@ class ScanFragment : Fragment() {
     private lateinit var wifiManager: WifiManager
     private lateinit var scanResultsTextView: TextView
     private lateinit var scanButton: Button
+    private val dataRepository = DataRepository.getInstance()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -48,10 +49,15 @@ class ScanFragment : Fragment() {
             Python.start(AndroidPlatform(requireContext()));
         }
 
+        scanResultsTextView.text="Still running the code... or failed"
+        scanResultsTextView.text= dataRepository.getAllData().toString()
+
+
         scanButton.setOnClickListener {
             displayIPAndBroadcast()
             CoroutineScope(Dispatchers.IO).launch {
                 val result = IcmpScanUtility.icmpScan(requireContext()) // Execute Python code here
+                updateDataInRepository(result)
 
                 // Update the UI on the main thread
                 launch(Dispatchers.Main) {
@@ -136,12 +142,13 @@ class ScanFragment : Fragment() {
         )
     }
 
-    //private val UDP_PORT = 12345 // Use the port you want to scan on
-    private val executor: ExecutorService = Executors.newFixedThreadPool(10) // Adjust the number of threads as needed
-
     override fun onDestroyView() {
         super.onDestroyView()
-        executor.shutdown() // Shut down the executor when the view is destroyed
+
+    }
+
+    private fun updateDataInRepository(newData: String) {
+        dataRepository.addOrUpdateData(newData)
     }
 
 
