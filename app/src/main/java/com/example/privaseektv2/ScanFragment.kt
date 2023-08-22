@@ -55,15 +55,21 @@ class ScanFragment : Fragment() {
 
         scanButton.setOnClickListener {
             displayIPAndBroadcast()
-            CoroutineScope(Dispatchers.IO).launch {
-                val result = IcmpScanUtility.icmpScan(requireContext()) // Execute Python code here
-                updateDataInRepository(result)
+            if(IcmpScanUtility.isWifiConnected(requireContext())){
+                CoroutineScope(Dispatchers.IO).launch {
+                    val result = IcmpScanUtility.icmpScan(requireContext()) // Execute Python code here
+                    updateDataInRepository(result)
 
-                // Update the UI on the main thread
-                launch(Dispatchers.Main) {
-                    scanResultsTextView.text = result.toString()
+                    // Update the UI on the main thread
+                    launch(Dispatchers.Main) {
+                        scanResultsTextView.text = result.toString()
+                    }
                 }
+
+            }else{
+                scanResultsTextView.text = "You are not connected to the internet!"
             }
+
 
         }
 

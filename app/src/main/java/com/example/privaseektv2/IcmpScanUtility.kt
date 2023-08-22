@@ -1,6 +1,7 @@
 package com.example.privaseektv2
 
 import android.content.Context
+import android.net.ConnectivityManager
 import com.chaquo.python.PyObject
 import com.chaquo.python.Python
 import com.chaquo.python.android.AndroidPlatform
@@ -11,6 +12,13 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 
 object IcmpScanUtility {
+
+    fun isWifiConnected(context: Context): Boolean {
+        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val networkInfo = connectivityManager.activeNetworkInfo
+        return networkInfo?.type == ConnectivityManager.TYPE_WIFI && networkInfo.isConnected
+    }
+
     suspend fun icmpScan(context: Context): String {
         // Your existing icmp_scan() function code goes here
         // Remember to replace 'this' references with 'context'
