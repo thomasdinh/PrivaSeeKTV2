@@ -13,6 +13,11 @@
             android:id="@+id/nav_scan"
             android:icon="@drawable/devices_icon"
             android:title="Scan" />
+        <item
+            android:id="@+id/nav_report"
+            android:icon="@drawable/report_icon"
+            android:title="Report" />
+
 
         <item
             android:id="@+id/nav_settings"

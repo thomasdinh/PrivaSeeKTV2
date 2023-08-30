@@ -7,6 +7,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.lifecycle.ReportFragment.Companion.reportFragment
 
 import com.example.privaseektv2.IcmpScanUtility.icmpScan
 import com.google.android.material.navigation.NavigationView
@@ -54,6 +55,11 @@ class MainActivity : AppCompatActivity() {
                 R.id.nav_scan -> {
                     supportFragmentManager.beginTransaction()
                         .replace(R.id.fragment_container, ScanFragment())
+                        .commit()
+                }
+                R.id.nav_report -> {
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.fragment_container, ReportFragment())
                         .commit()
                 }
                 // Handle other menu items if needed
